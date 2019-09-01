@@ -51,6 +51,18 @@ ScriptRRefDelete ScriptRRefDelete::fromMessage(const Message& message) {
   return ScriptRRefDelete(ScriptRRefBase::fromMessage(message));
 }
 
+ScriptRRefAccept ScriptRRefAccept::fromMessage(const Message& message) {
+  return ScriptRRefAccept(ScriptRRefBase::fromMessage(message));
+}
+
+ScriptForkNotify ScriptForkNotify::fromMessage(const Message& message) {
+  return ScriptForkNotify(ScriptRRefBase::fromMessage(message));
+}
+
+ScriptForkAccept ScriptForkAccept::fromMessage(const Message& message) {
+  return ScriptForkAccept(ScriptRRefBase::fromMessage(message));
+}
+
 } // namespace rpc
 } // namespace distributed
 } // namespace torch

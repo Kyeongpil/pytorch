@@ -53,7 +53,7 @@ class TORCH_API ScriptRRefCreate final : public ScriptRRefBase {
   static ScriptRRefCreate fromMessage(const Message& message);
 };
 
-// UserRRef (regardless of it's the creator or not) uses this message to notiify
+// UserRRef (regardless it's the creator or not) uses this message to notiify
 // OwnerRRef on delete.
 class TORCH_API ScriptRRefDelete final : public ScriptRRefBase {
  public:
@@ -61,6 +61,35 @@ class TORCH_API ScriptRRefDelete final : public ScriptRRefBase {
       : ScriptRRefBase(std::move(value), MessageType::RREF_USER_DELETE) {}
 
   static ScriptRRefDelete fromMessage(const Message& message);
+};
+
+// The OwnerRRef uses this message to accept a UserRRef. A UserRRef cannot be
+// deleted before receiving this message.
+class TORCH_API ScriptRRefAccept final : public ScriptRRefBase {
+ public:
+   ScriptRRefAccept(at::IValue value)
+       : ScriptRRefBase(std::move(value), MessageType::RREF_USER_ACCEPT) {}
+
+   static ScriptRRefAccept fromMessage(const Message& message);
+};
+
+// A UserRRef uses this message to notify owner on fork.
+class TORCH_API ScriptForkNotify final : public ScriptRRefBase {
+ public:
+   ScriptForkNotify(at::IValue value)
+       : ScriptRRefBase(std::move(value), MessageType::RREF_FORK_NOTIFY) {}
+
+   static ScriptForkNotify fromMessage(const Message& message);
+};
+
+// The OwnerRRef uses this message to a UserRRef that its fork request has been
+// accepted. A UserRRef cannot be deleted if it has any pending fork requests.
+class TORCH_API ScriptForkAccept final : public ScriptRRefBase {
+ public:
+   ScriptForkAccept(at::IValue value)
+       : ScriptRRefBase(std::move(value), MessageType::RREF_FORK_ACCEPT) {}
+
+   static ScriptForkAccept fromMessage(const Message& message);
 };
 
 } // namespace rpc
